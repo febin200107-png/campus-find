@@ -1,0 +1,151 @@
+
+<div class="page">
+  <header class="header">
+    <div>
+      <h1>CampusFind</h1>
+      <p>Lost something? Found something? Let's reconnect it.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="form-card">
+      <h2>Report an Item</h2>
+      <p class="subtitle">Share the details of a lost or found item.</p>
+
+      <form #itemForm="ngForm" (ngSubmit)="reportItem()">
+        <div class="field">
+          <label for="type">Report Type *</label>
+          <select id="type" name="type" [(ngModel)]="newItem.type" required>
+            <option value="Lost">I lost an item</option>
+            <option value="Found">I found an item</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="name">Item Name *</label>
+          <input id="name" name="name" [(ngModel)]="newItem.name"
+            placeholder="e.g. Blue water bottle" required />
+        </div>
+
+        <div class="field">
+          <label for="category">Category *</label>
+          <select id="category" name="category" [(ngModel)]="newItem.category" required>
+            <option value="">Select a category</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Books">Books</option>
+            <option value="Accessories">Accessories</option>
+            <option value="ID Cards">ID Cards</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="location">Location *</label>
+          <input id="location" name="location" [(ngModel)]="newItem.location"
+            placeholder="Where was it lost or found?" required />
+        </div>
+
+        <div class="field">
+          <label for="date">Date *</label>
+          <input id="date" type="date" name="date" [(ngModel)]="newItem.date" required />
+        </div>
+
+        <div class="field">
+          <label for="description">Description</label>
+          <textarea id="description" name="description"
+            [(ngModel)]="newItem.description"
+            placeholder="Add identifying details" rows="3"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="contact">Contact Information *</label>
+          <input id="contact" name="contact" [(ngModel)]="newItem.contact"
+            placeholder="Email or phone number" required />
+        </div>
+
+        @if (successMessage) {
+          <p class="success" role="status">{{ successMessage }}</p>
+        }
+
+        @if (errorMessage) {
+          <p class="error" role="alert">{{ errorMessage }}</p>
+        }
+
+        <button type="submit" [disabled]="itemForm.invalid || loading">
+          Submit Report
+        </button>
+      </form>
+    </section>
+
+    <section class="reports">
+      <h2>Recent Reports</h2>
+      <p class="subtitle">Find lost and found items on your campus.</p>
+
+      <div class="filters">
+        <div class="field">
+          <label for="search">Search reports</label>
+          <input id="search" type="search" name="search"
+            [(ngModel)]="searchText"
+            placeholder="Search name, category, or location..." />
+        </div>
+
+        <div class="field">
+          <label for="filterType">Filter by type</label>
+          <select id="filterType" name="filterType" [(ngModel)]="selectedType">
+            <option value="All">All reports</option>
+            <option value="Lost">Lost items</option>
+            <option value="Found">Found items</option>
+          </select>
+        </div>
+      </div>
+
+      @if (loading) {
+        <p>Loading reports...</p>
+      } @else if (filteredItems.length === 0) {
+        <div class="empty-state">
+          <h3>No matching reports</h3>
+          <p>Try a different search term or filter.</p>
+        </div>
+      } @else {
+        <p class="result-count">
+          Showing {{ filteredItems.length }} of {{ items.length }} reports
+        </p>
+
+        <div class="item-grid">
+          @for (item of filteredItems; track item._id || $index) {
+            <article class="item-card">
+              <span class="item-type" [class.found]="item.type === 'Found'">
+                {{ item.type }}
+              </span>
+
+              <h3>{{ item.name }}</h3>
+              <p><strong>Category:</strong> {{ item.category }}</p>
+              <p><strong>Location:</strong> {{ item.location }}</p>
+              <p><strong>Date:</strong> {{ item.date }}</p>
+
+              @if (item.description) {
+                <p>{{ item.description }}</p>
+              }
+
+              <p><strong>Contact:</strong> {{ item.contact }}</p>
+
+              <button
+                type="button"
+                class="delete-button"
+                [disabled]="deletingId === item._id"
+                (click)="deleteItem(item)"
+              >
+                {{ deletingId === item._id ? 'Deleting...' : 'Delete Report' }}
+              </button>
+            </article>
+          }
+        </div>
+      }
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>CampusFind — Helping campus belongings find their way home.</p>
+  </footer>
+</div>

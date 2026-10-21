@@ -1,0 +1,4 @@
+import { Component } from '@angular/core';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+@Component({ selector: 'app-root', standalone: true, imports: [RouterLink, RouterLinkActive, RouterOutlet], template: `<header class="site-header"><a class="brand" routerLink="/">Campus<span>Find</span></a><nav aria-label="Main navigation"><a routerLink="/" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="active">Home</a><a routerLink="/report" routerLinkActive="active">Report</a><a routerLink="/browse" routerLinkActive="active">Browse items</a><a routerLink="/matches" routerLinkActive="active">Matches</a></nav></header><main class="main"><router-outlet /></main><footer class="site-footer">CampusFind · Helping campus belongings find their way home.</footer>`, styleUrl: './app.css' })
+export class App {}
